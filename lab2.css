@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: #222;
+    background-color: #f7f7f7;
+}
+
+header, footer {
+    background-color: #222;
+    color: white;
+    text-align: center;
+}
+
+header {
+    padding: 20px;
+}
+
+header h1, header h3, header h4 {
+    margin: 8px 0;
+}
+
+header h3, header h4 {
+    font-size: 14px;
+    font-weight: normal;
+}
+
+main {
+    max-width: 900px;
+    margin: auto;
+}
+
+section {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.about p {
+    max-width: 600px;
+    margin: auto;
+    line-height: 1.5;
+}
+
+.project-card {
+    display: inline-block;
+    vertical-align: top;
+    width: 220px;
+    margin: 8px;
+    padding: 15px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.project-card h3 {
+    margin: 0 0 8px;
+}
+
+.project-card p {
+    margin: 0;
+    font-size: 14px;
+}
+
+form {
+    max-width: 300px;
+    margin: auto;
+}
+
+input, textarea, button {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-family: inherit;
+}
+
+input, textarea {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+textarea {
+    height: 90px;
+}
+
+button {
+    border: 0;
+    border-radius: 4px;
+    background-color: #222;
+    color: white;
+}
+
+footer {
+    padding: 20px;
+    font-size: 12px;
+}
