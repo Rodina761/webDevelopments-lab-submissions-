@@ -1,0 +1,14 @@
+body {
+    background-color: white;
+    text-align: center;
+    margin-top: 60px;
+}
+
+button {
+    margin: 3px;
+    cursor: pointer;
+}
+
+#result {
+    margin-top: 20px;
+}
