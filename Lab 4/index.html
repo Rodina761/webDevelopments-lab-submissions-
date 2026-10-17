@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main class="card">
+    <header>
+      <div>
+        <h1>Todo App</h1>
+        <p>Keep track of what you need to do.</p>
+      </div>
+      <button type="button" id="show-form" aria-expanded="false" aria-controls="task-form">Add</button>
+    </header>
+
+    <section aria-labelledby="list-heading">
+      <div class="list-heading">
+        <h2 id="list-heading">My tasks</h2>
+        <div class="filters" role="group" aria-label="Filter tasks">
+          <button type="button" data-filter="all" class="selected" aria-pressed="true">All</button>
+          <button type="button" data-filter="active" aria-pressed="false">Active</button>
+          <button type="button" data-filter="completed" aria-pressed="false">Completed</button>
+        </div>
+      </div>
+      <ul id="task-list"></ul>
+      <p id="empty-message" hidden>No tasks yet. Click Add Task to get started.</p>
+      <div class="list-footer">
+        <span id="task-count" aria-live="polite"></span>
+        <button type="button" id="clear-completed">Clear completed</button>
+      </div>
+    </section>
+
+    <form id="task-form" hidden>
+      <h2>Add a new task</h2>
+      <label for="task-name">Task name</label>
+      <input type="text" id="task-name" placeholder="e.g. Finish lab assignment" maxlength="100" required>
+
+      <label for="task-description">Description</label>
+      <textarea id="task-description" rows="2" placeholder="What needs to be done?" maxlength="500" required></textarea>
+
+      <div class="form-actions">
+        <button type="submit">Save Task</button>
+        <button type="button" id="cancel-task">Cancel</button>
+      </div>
+    </form>
+
+  </main>
+</body>
+</html>
