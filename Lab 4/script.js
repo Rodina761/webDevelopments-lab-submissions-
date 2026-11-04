@@ -1,150 +1,118 @@
-const form = document.getElementById('task-form');
-const nameInput = document.getElementById('task-name');
-const descriptionInput = document.getElementById('task-description');
-const taskList = document.getElementById('task-list');
-const emptyMessage = document.getElementById('empty-message');
-const taskCount = document.getElementById('task-count');
-const addButton = document.getElementById('show-form');
-const cancelButton = document.getElementById('cancel-task');
-const clearButton = document.getElementById('clear-completed');
-const filterButtons = document.querySelectorAll('[data-filter]');
-const taskTemplate = document.getElementById('task-template');
-
-
-const tasks = [
-  { name: 'Study', description: 'Read chapter one.', completed: false },
-  { name: 'Do homework', description: 'Finish the lab task.', completed: false },
-  { name: 'Buy a notebook', description: 'Get a notebook for class.', completed: true }
-];
-let filter = 'all';
-
-function closeForm() {
-  form.hidden = true;
-  form.reset();
-  addButton.setAttribute('aria-expanded', 'false');
-  addButton.focus();
+"use strict";
+class Todo {
+    constructor(id, text) {
+        this.id = id;
+        this.text = text;
+        this.done = false;
+    }
 }
-
-addButton.addEventListener('click', function () {
-  form.hidden = !form.hidden;
-  addButton.setAttribute('aria-expanded', String(!form.hidden));
-  if (!form.hidden) {
-    nameInput.focus();
-  }
-});
-
-cancelButton.addEventListener('click', closeForm);
-
-form.addEventListener('keydown', function (event) {
-  if (event.key === 'Escape') {
-    closeForm();
-  }
-});
-
-function showTasks() {
-  taskList.replaceChildren();
-  let completed = 0;
-  let shownTasks = 0;
-
-  tasks.forEach(function (task, index) {
-    if (task.completed) {
-      completed++;
-    }
-
-    if (filter === 'active' && task.completed) {
-      return;
-    }
-    if (filter === 'completed' && !task.completed) {
-      return;
-    }
-
-    shownTasks++;
-    const row = taskTemplate.content.firstElementChild.cloneNode(true);
-    const checkbox = row.querySelector('input');
-    const nameLabel = row.querySelector('label');
-    const descriptionText = row.querySelector('p');
-    const deleteButton = row.querySelector('button');
-
-    checkbox.id = 'task-' + index;
-    checkbox.checked = task.completed;
-    row.classList.toggle('completed', task.completed);
-    nameLabel.htmlFor = checkbox.id;
-    nameLabel.textContent = task.name;
-    descriptionText.textContent = task.description;
-    deleteButton.setAttribute('aria-label', 'Delete ' + task.name);
-
-    checkbox.addEventListener('change', function () {
-      task.completed = checkbox.checked;
-      showTasks();
-      const checkboxAfterUpdate = document.getElementById('task-' + index);
-      if (checkboxAfterUpdate) {
-        checkboxAfterUpdate.focus();
-      } else {
-        addButton.focus();
-      }
+let todos = [new Todo(1, "See Lecture"), new Todo(2, "Solve assignment")];
+let nextId = 3;
+let filter = "all";
+const input = document.getElementById("todo-input");
+const addBtn = document.getElementById("add-btn");
+const list = document.getElementById("todo-list");
+const count = document.getElementById("count");
+const clearCompletedBtn = document.getElementById("clear-completed");
+const clearAllBtn = document.getElementById("clear-all");
+const filterBtns = document.querySelectorAll(".filters button");
+function render() {
+    list.innerHTML = "";
+    const shown = todos.filter((t) => {
+        if (filter === "active")
+            return !t.done;
+        if (filter === "completed")
+            return t.done;
+        return true;
     });
-
-    deleteButton.addEventListener('click', function () {
-      tasks.splice(index, 1);
-      showTasks();
-      addButton.focus();
+    shown.forEach((todo) => {
+        const li = document.createElement("li");
+        li.dataset.id = String(todo.id);
+        if (todo.done)
+            li.classList.add("done");
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = todo.done;
+        const span = document.createElement("span");
+        span.textContent = todo.text;
+        const del = document.createElement("button");
+        del.className = "delete";
+        del.textContent = "🗑";
+        li.append(check, span, del);
+        list.appendChild(li);
     });
-
-    taskList.appendChild(row);
-  });
-
-  const remaining = tasks.length - completed;
-  if (remaining === 1) {
-    taskCount.textContent = '1 task left';
-  } else {
-    taskCount.textContent = remaining + ' tasks left';
-  }
-  clearButton.disabled = completed === 0;
-  emptyMessage.hidden = shownTasks > 0;
-  if (tasks.length === 0) {
-    emptyMessage.textContent = 'No tasks yet. Click Add to get started.';
-  } else {
-    emptyMessage.textContent = 'No tasks in this filter.';
-  }
+    const left = todos.filter((t) => !t.done).length;
+    count.textContent = `${left} ${left === 1 ? "item" : "items"} left`;
 }
-
-form.addEventListener('submit', function (event) {
-  event.preventDefault();
-  const name = nameInput.value.trim();
-  const description = descriptionInput.value.trim();
-
-  if (name === '' || description === '') {
-    return;
-  }
-
-  tasks.push({ name: name, description: description, completed: false });
-  changeFilter('all');
-  closeForm();
-});
-
-function changeFilter(choice) {
-  filter = choice;
-  filterButtons.forEach(function (button) {
-    const selected = button.dataset.filter === choice;
-    button.classList.toggle('selected', selected);
-    button.setAttribute('aria-pressed', String(selected));
-  });
-  showTasks();
+function addTodo() {
+    const text = input.value.trim();
+    if (text === "")
+        return;
+    todos = [...todos, new Todo(nextId, text)];
+    nextId++;
+    input.value = "";
+    render();
 }
-
-filterButtons.forEach(function (button) {
-  button.addEventListener('click', function () {
-    changeFilter(button.dataset.filter);
-  });
+addBtn.addEventListener("click", addTodo);
+input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter")
+        addTodo();
 });
-
-clearButton.addEventListener('click', function () {
-  for (let index = tasks.length - 1; index >= 0; index--) {
-    if (tasks[index].completed) {
-      tasks.splice(index, 1);
+list.addEventListener("click", (e) => {
+    const target = e.target;
+    const li = target.closest("li");
+    if (!li)
+        return;
+    const id = Number(li.dataset.id);
+    if (target.classList.contains("delete")) {
+        todos = todos.filter((t) => t.id !== id);
+        render();
     }
-  }
-  showTasks();
+    else if (target instanceof HTMLInputElement && target.type === "checkbox") {
+        const todo = todos.find((t) => t.id === id);
+        if (todo)
+            todo.done = !todo.done;
+        render();
+    }
 });
-
-showTasks();
+list.addEventListener("dblclick", (e) => {
+    const target = e.target;
+    if (target.tagName !== "SPAN")
+        return;
+    const li = target.closest("li");
+    const todo = todos.find((t) => t.id === Number(li.dataset.id));
+    if (!todo)
+        return;
+    const edit = document.createElement("input");
+    edit.type = "text";
+    edit.className = "edit";
+    edit.value = todo.text;
+    target.replaceWith(edit);
+    edit.focus();
+    edit.addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") {
+            const newText = edit.value.trim();
+            if (newText !== "")
+                todo.text = newText;
+            render();
+        }
+    });
+    edit.addEventListener("blur", render);
+});
+filterBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        filter = btn.dataset.filter;
+        render();
+    });
+});
+clearCompletedBtn.addEventListener("click", () => {
+    todos = todos.filter((t) => !t.done);
+    render();
+});
+clearAllBtn.addEventListener("click", () => {
+    todos = [];
+    render();
+});
+render();
